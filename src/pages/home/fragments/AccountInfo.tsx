@@ -1,17 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { User } from "@/utils/models"
 
-const AccountInfo = () => {
+type AccountProps = {
+	user: User
+	postsNumber: number
+}
+
+const AccountInfo: React.FC<AccountProps> = ({
+	user, 
+	postsNumber
+}) => {
 	return (
 		<Card className="bg-primary-foreground">
 			<CardHeader>
-				<CardTitle>Simone</CardTitle>
+				<CardTitle>{user.name}</CardTitle>
 			</CardHeader>
 			<CardContent className="grid gap-8">
 				<div className="flex items-center gap-4">
 					<div className="grid gap-1">
 						<p className="text-sm font-medium leading-none">Email</p>
 						<p className="text-sm text-muted-foreground">
-							olivia.martin@email.com
+							{user.email}
 						</p>
 					</div>
 				</div>
@@ -19,7 +28,7 @@ const AccountInfo = () => {
 					<div className="grid gap-1">
 						<p className="text-sm font-medium leading-none">Gender</p>
 						<p className="text-sm text-muted-foreground">
-							M
+							{user.gender}
 						</p>
 					</div>
 				</div>
@@ -27,14 +36,14 @@ const AccountInfo = () => {
 					<div className="grid gap-1">
 						<p className="text-sm font-medium leading-none">Status</p>
 						<p className="text-sm text-muted-foreground">
-							active
+							{user.status}
 						</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-4">
 					<div className="grid gap-1">
 						<p className="text-sm font-medium leading-none">Number of Posts</p>
-						<p className="text-sm text-muted-foreground">23</p>
+						<p className="text-sm text-muted-foreground">{postsNumber}</p>
 					</div>
 				</div>
 			</CardContent>

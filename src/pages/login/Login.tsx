@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import RotationDiv from './fragments/RotationDiv'
 import BgImage from "./fragments/BgImage"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GET_USER_LIST } from "@/utils/graphql/query"
-import { useLazyQuery, useQuery,  } from "@apollo/client"
 import { User } from "@/utils/models"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -18,6 +16,9 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form"
+import axios from 'axios'
+import { useAtom } from 'jotai'
+import storeAtom from '../../utils/store/index'
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -25,6 +26,7 @@ const formSchema = z.object({
 }).required()
 
 const Login = () => {
+	const [store, setStore] = useAtom(storeAtom)
 	const navigate = useNavigate();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -34,14 +36,17 @@ const Login = () => {
 		},
 	})
 
-	const [getUserList, { data }] = useLazyQuery<{ users: { nodes: User[] } }>(GET_USER_LIST)
-
-	const handleLogin = async (values: z.infer<typeof formSchema>) => {
-		await getUserList()
-		const user = data!.users.nodes.find(res => res.email === values.email)
-		if (user && user.status === 'active') navigate('/home')
-		else if (user && user.status === 'inactive') console.log('user inactive')
-		else console.log('any user found')
+	const handleLogin = (values: z.infer<typeof formSchema>) => {
+		axios.get(`https://gorest.co.in/public/v2/users?email=${values.email}`)
+			.then(response => {
+				const user = response.data
+				if (user.length > 0 && user[0].status === 'active') {
+					setStore({user: user[0]})
+					navigate('/home')
+				}
+				else if (user.length > 0 && user[0].status === 'inactive') console.log('user inactive')
+				else console.log('any user found')
+			})
 	}
 
 	return (

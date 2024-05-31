@@ -9,9 +9,19 @@ export type User = {
 
 export type Post = {
     body: string
-    comments: Comment[];
     id: number
     title: string
-    user: User
-    userId: number
+    user_id: number
 }
+
+export type Comment = {
+    id: string
+    post_id: number
+    email: string
+    name: string
+    body: string
+}
+
+export interface StoreModel {
+    user: User
+  }

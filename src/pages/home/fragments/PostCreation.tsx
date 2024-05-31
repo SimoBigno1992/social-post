@@ -84,7 +84,6 @@ const PostCreation = () => {
 				</Form>
 			</CardContent>
 		</Card>
-
 	)
 }
 
