@@ -3,7 +3,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -15,6 +14,8 @@ import logoDark from '../assets/logo_dark.svg'
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import React from "react"
+import { useAtom } from "jotai"
+import storeAtom from '../utils/store/index'
 
 const Logo = styled.img`
 	cursor: pointer;
@@ -23,10 +24,17 @@ type HeaderProps = {
 	username: string;
 }
 
-const Header: React.FC<HeaderProps> = ({username}) => {
+const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
 	const navigate = useNavigate()
+	const [store, setStore] = useAtom(storeAtom)
+
+	const logout = () => {
+		navigate("/login")
+		setStore({user: {}})
+	}
+
 	return (
-		<header className="flex justify-between items-center h-20 sm:p-10 ">
+		<header ref={ref} className="flex justify-between items-center h-20 sm:p-10 ">
 			<Logo src={logoDark} className="h-20" alt="home" onClick={() => navigate("/home")} />
 			<div className="flex items-center">
 				<div className="text-lg font-semibold sm:pr-4">Hi, {username}</div>
@@ -43,13 +51,13 @@ const Header: React.FC<HeaderProps> = ({username}) => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
-						<DropdownMenuItem>Logout</DropdownMenuItem>
+						<DropdownMenuItem>My Account</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
 		</header>
 	)
-}
+})
 
 export default Header
