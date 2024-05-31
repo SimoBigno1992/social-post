@@ -1,10 +1,13 @@
 import Header from "@/components/header"
 import AccountInfo from "./fragments/AccountInfo"
 import PostCreation from "./fragments/PostCreation"
+import { useQuery } from "@apollo/client"
+import { GET_POST_BY_USER } from "@/utils/graphql/query"
 
 
 
 const Home = () => {
+
 	return (
 		<>
 			<Header />

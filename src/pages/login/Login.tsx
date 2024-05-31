@@ -6,7 +6,7 @@ import RotationDiv from './fragments/RotationDiv'
 import BgImage from "./fragments/BgImage"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { GET_USER_LIST } from "@/utils/graphql/query"
-import { useQuery } from "@apollo/client"
+import { useLazyQuery, useQuery,  } from "@apollo/client"
 import { User } from "@/utils/models"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -34,9 +34,10 @@ const Login = () => {
 		},
 	})
 
-	const { data } = useQuery<{ users: { nodes: User[] } }>(GET_USER_LIST)
+	const [getUserList, { data }] = useLazyQuery<{ users: { nodes: User[] } }>(GET_USER_LIST)
 
-	const handleLogin = (values: z.infer<typeof formSchema>) => {
+	const handleLogin = async (values: z.infer<typeof formSchema>) => {
+		await getUserList()
 		const user = data!.users.nodes.find(res => res.email === values.email)
 		if (user && user.status === 'active') navigate('/home')
 		else if (user && user.status === 'inactive') console.log('user inactive')
