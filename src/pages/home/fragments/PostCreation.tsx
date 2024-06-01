@@ -21,6 +21,9 @@ import {
 import { Plus, Trash } from "lucide-react"
 import { useState } from "react"
 import React from "react"
+import axios from "axios"
+import { useAtom } from "jotai"
+import storeAtom from '../../../utils/store/index'
 
 const formSchema = z.object({
 	title: z.string().min(2, {
@@ -33,8 +36,13 @@ const formSchema = z.object({
 	})
 })
 
-const PostCreation = React.forwardRef<HTMLElement>((_, ref) => {
+type PostCreationProps = {
+	createPost: (values: z.infer<typeof formSchema>) => void
+}
+
+const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPost}, ref) => {
 	const [showForm, setShowForm] = useState<boolean>(false)
+	const [store] = useAtom(storeAtom)
 	const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,10 +50,6 @@ const PostCreation = React.forwardRef<HTMLElement>((_, ref) => {
 			content: ""
     },
   })
-
-	const createPost = (values: z.infer<typeof formSchema>) => {
-		console.log(values)
-	}
 
 	return (
 		<div ref={ref} >

@@ -19,6 +19,7 @@ import {
 import axios from 'axios'
 import { useAtom } from 'jotai'
 import storeAtom from '../../utils/store/index'
+import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -37,7 +38,12 @@ const Login = () => {
 	})
 
 	const handleLogin = (values: z.infer<typeof formSchema>) => {
-		axios.get(`https://gorest.co.in/public/v2/users?email=${values.email}`)
+		const config = {
+			headers: {
+				"Authorization": "Bearer " + BEARER_TOKEN
+			}
+		}
+		axios.get(`${BASE_URL}/public/v2/users?email=${values.email}`, config)
 			.then(response => {
 				const user = response.data
 				if (user.length > 0 && user[0].status === 'active') {

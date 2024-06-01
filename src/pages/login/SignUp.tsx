@@ -15,10 +15,18 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form"
+import axios from "axios"
+import { BASE_URL, BEARER_TOKEN } from "@/config.env"
+import { Select } from "@radix-ui/react-select"
+import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "@/components/ui/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
 	name: z.string().min(3, "Name must be al least 3 characters long"),
+	gender: z.string(),
 	password: z.string().min(6, "Password must be at least 6 characters long"),
 	confirmPassword: z.string().min(6, "Password must be at least 6 characters long")
 })
@@ -40,13 +48,39 @@ const SignUp = () => {
 		defaultValues: {
 			email: "",
 			password: "",
+			gender: "",
 			name: "",
 			confirmPassword: ""
 		},
 	})
 
 	const handleSignup = (values: z.infer<typeof formSchema>) => {
-		console.log(values)
+		const config = {
+			headers: {
+				"Authorization": "Bearer " + BEARER_TOKEN
+			}
+		}
+		const body = {
+			name: values.name,
+			email: values.email,
+			gender: "male",
+			status: "active"
+		}
+		axios.post(`${BASE_URL}/public/v2/users`, body, config)
+			.then(res => {
+				toast({
+					title: "You have create your account successfully!",
+					description: "Go to Sign In page to login.",
+					action: <ToastAction altText="Go to Sing In" onClick={() => navigate("/login")}>Go to Sign In</ToastAction>,
+				})
+				form.reset()
+			}).catch(err => {
+				toast({
+					title: "Ops...",
+					description: "Some error occurred",
+					variant: "destructive" 
+				})
+			})
 	}
 
 	return (
@@ -100,6 +134,28 @@ const SignUp = () => {
 								/>
 								<FormField
 									control={form.control}
+									name="gender"
+									render={({ field }) => (
+										<FormItem>
+											<Label htmlFor="gender">Gender</Label>
+											<FormControl>
+												<Select onValueChange={field.onChange} defaultValue={field.value}>
+													<SelectTrigger>
+														<SelectValue placeholder="Select a gender" />
+													</SelectTrigger>
+													<SelectContent id="gender">
+														<SelectGroup>
+															<SelectItem value="male">Male</SelectItem>
+															<SelectItem value="female">Female</SelectItem>
+														</SelectGroup>
+													</SelectContent>
+												</Select>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
 									name="password"
 									render={({ field }) => (
 										<FormItem>
@@ -135,37 +191,6 @@ const SignUp = () => {
 								<Button type="submit" className="w-full">Sign Up</Button>
 							</form>
 						</Form>
-					{/* <div className="grid gap-4">
-						<div className="grid gap-2">
-							<Label htmlFor="email">Email</Label>
-							<Input
-								id="email"
-								type="email"
-								placeholder="m@example.com"
-								required
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="name">Name</Label>
-							<Input
-								id="name"
-								type="text"
-								placeholder="Charles Leclerc"
-								required
-							/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="password">Password</Label>
-							<Input id="password" type="password" required/>
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="confirm_password">Confirm Password</Label>
-							<Input id="confirm_password" type="password" required/>
-						</div>
-						<Button type="submit" className="w-full">
-							Create an account
-						</Button>
-					</div> */}
 					<div className="mt-4 text-center text-sm">
 						Already have an account?{" "}
 						<span onClick={()=>navigate("/login")} className="underline">

@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Post } from "@/utils/models"
 import PostCard from "./fragments/PostCard"
-import React from "react"
+import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import { useResizeObserver } from "@/utils/hooks/useResizeObserver"
 
 const Home = () => {
@@ -27,10 +27,7 @@ const Home = () => {
 	const observePostCreation = useResizeObserver(updateSizes)
 	
 	useEffect(() => {
-		axios.get(`https://gorest.co.in/public/v2/users/${store.user!.id}/posts`)
-			.then(response => {
-				setPosts(response.data)
-			})
+		getPosts()
 	}, [store.user])
 
 	useEffect(() => {
@@ -43,6 +40,30 @@ const Home = () => {
 		}
 	}, [observeHeader, observePostCreation])
 
+	const getPosts = () => {
+		axios.get(`${BASE_URL}/public/v2/users/${store.user!.id}/posts`)
+		.then(response => {
+			setPosts(response.data)
+		})
+	}
+
+	const createPost = (values: {title: string, content:string}) => {
+		const config = {
+			headers: {
+				"Authorization": "Bearer " + BEARER_TOKEN
+			}
+		}
+		const body = {
+			title: values.title,
+			body: values.content
+		}
+		axios.post(`${BASE_URL}/public/v2/users/${store.user!.id}/posts`, body, config)
+			.then(response => {
+				console.log(response)
+				if (response.statusText === "Created") getPosts()
+			})
+	}
+
 	return (
 		<>
 			<Header ref={headerRef} username={store.user!.name}/>
@@ -50,7 +71,7 @@ const Home = () => {
         <div className="mx-auto grid w-full max-w-7xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[300px_1fr]">
 					<AccountInfo user={store.user!} postsNumber={posts.length}/>
           <div className="grid gap-6">
-						<PostCreation ref={postCreationRef}/>
+						<PostCreation ref={postCreationRef} createPost={createPost}/>
 						<div style={{overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `}}>
 						{posts && posts.length > 0 ? 
 							posts.map((post, index) => {

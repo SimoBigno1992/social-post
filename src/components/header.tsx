@@ -51,7 +51,6 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem>My Account</DropdownMenuItem>
 						<DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
