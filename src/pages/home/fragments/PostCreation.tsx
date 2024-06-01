@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { z } from "zod"
-import { useForm } from "react-hook-form"
+import { UseFormReturn, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
@@ -37,7 +37,10 @@ const formSchema = z.object({
 })
 
 type PostCreationProps = {
-	createPost: (values: z.infer<typeof formSchema>) => void
+	createPost: (values: z.infer<typeof formSchema>, form: UseFormReturn<{
+			title: string;
+			content: string;
+	}, any, undefined>) => void
 }
 
 const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPost}, ref) => {
@@ -51,6 +54,10 @@ const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPo
     },
   })
 
+	const handleCreation = (values: z.infer<typeof formSchema>) => {
+		createPost(values, form)
+	}
+
 	return (
 		<div ref={ref} >
 			<Card x-chunk="dashboard-04-chunk-1" className="bg-primary-foreground">
@@ -63,13 +70,16 @@ const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPo
 							What are you thinking about?
 						</CardDescription>
 					</div>
-					<Button size="icon" className="h-10 w-10 mt-0" variant={showForm ? "destructive" : "default"} onClick={() => setShowForm(!showForm)}>
+					<Button size="icon" className="h-10 w-10 mt-0" variant={showForm ? "destructive" : "default"} onClick={() => {
+						if (showForm) form.reset()
+						setShowForm(!showForm)
+					}}>
 						{!showForm ? <Plus className="h-4 w-4" /> : <Trash className="h-4 w-4"/>}
 					</Button>
 				</CardHeader>
 				{showForm && <CardContent>
 					<Form {...form}>
-						<form onSubmit={form.handleSubmit(createPost)} className="space-y-8">
+						<form onSubmit={form.handleSubmit(handleCreation)} className="space-y-8">
 							<FormField
 								control={form.control}
 								name="title"

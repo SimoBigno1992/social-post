@@ -9,6 +9,8 @@ import { Post } from "@/utils/models"
 import PostCard from "./fragments/PostCard"
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import { useResizeObserver } from "@/utils/hooks/useResizeObserver"
+import { Search } from "lucide-react"
+import { UseFormReturn } from "react-hook-form"
 
 const Home = () => {
 	const [store] = useAtom(storeAtom)
@@ -41,13 +43,21 @@ const Home = () => {
 	}, [observeHeader, observePostCreation])
 
 	const getPosts = () => {
-		axios.get(`${BASE_URL}/public/v2/users/${store.user!.id}/posts`)
+		const config = {
+			headers: {
+				"Authorization": "Bearer " + BEARER_TOKEN
+			}
+		}
+		axios.get(`${BASE_URL}/public/v2/users/${store.user!.id}/posts`, config)
 		.then(response => {
 			setPosts(response.data)
 		})
 	}
 
-	const createPost = (values: {title: string, content:string}) => {
+	const createPost = (values: {title: string, content:string}, form: UseFormReturn<{
+			title: string;
+			content: string;
+	}, any, undefined>) => {
 		const config = {
 			headers: {
 				"Authorization": "Bearer " + BEARER_TOKEN
@@ -59,8 +69,8 @@ const Home = () => {
 		}
 		axios.post(`${BASE_URL}/public/v2/users/${store.user!.id}/posts`, body, config)
 			.then(response => {
-				console.log(response)
-				if (response.statusText === "Created") getPosts()
+				form.reset()
+				getPosts()
 			})
 	}
 
@@ -72,12 +82,16 @@ const Home = () => {
 					<AccountInfo user={store.user!} postsNumber={posts.length}/>
           <div className="grid gap-6">
 						<PostCreation ref={postCreationRef} createPost={createPost}/>
-						<div style={{overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `}}>
+						<div style={{overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `, display: 'flex', flexDirection: "column", gap: "1.5rem"}}>
 						{posts && posts.length > 0 ? 
 							posts.map((post, index) => {
 								return <PostCard post={post} key={index} userMail={store.user?.email}/>
 							}) : 
-							<p>Any Posts here</p>}
+								<div className="flex flex-col items-center mt-10">
+									<Search className="h-20 w-20 mb-2"></Search>
+									<h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Any posts here</h3>
+									<p className="text-muted-foreground">It seems that you haven't write any posts yet. Write your first post!</p>
+								</div>}
 							</div>
           </div>
 

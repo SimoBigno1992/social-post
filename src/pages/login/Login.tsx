@@ -20,6 +20,7 @@ import axios from 'axios'
 import { useAtom } from 'jotai'
 import storeAtom from '../../utils/store/index'
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
+import { toast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -50,8 +51,26 @@ const Login = () => {
 					setStore({user: user[0]})
 					navigate('/home')
 				}
-				else if (user.length > 0 && user[0].status === 'inactive') console.log('user inactive')
-				else console.log('any user found')
+				else if (user.length > 0 && user[0].status === 'inactive') {
+					toast({
+						title: "User Inactive",
+						description: "Your account is temporary disabled",
+						variant: "destructive" 
+					})
+				}
+				else {
+					toast({
+						title: "User Not Found",
+						description: "Any account exists with this email",
+						variant: "destructive" 
+					})
+				}
+			}).catch(err => {
+				toast({
+					title: "Ops...",
+					description: "Some error occurred",
+					variant: "destructive" 
+				})
 			})
 	}
 

@@ -191,7 +191,7 @@ const SignUp = () => {
 								<Button type="submit" className="w-full">Sign Up</Button>
 							</form>
 						</Form>
-					<div className="mt-4 text-center text-sm">
+					<div className="mt-4 text-center text-sm cursor-pointer">
 						Already have an account?{" "}
 						<span onClick={()=>navigate("/login")} className="underline">
 							Sign in
