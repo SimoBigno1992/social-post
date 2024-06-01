@@ -85,7 +85,7 @@ const Home = () => {
 						<div style={{overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `, display: 'flex', flexDirection: "column", gap: "1.5rem"}}>
 						{posts && posts.length > 0 ? 
 							posts.map((post, index) => {
-								return <PostCard post={post} key={index} userMail={store.user?.email}/>
+								return <PostCard post={post} key={index} userMail={store.user?.email} username={store.user?.name}/>
 							}) : 
 								<div className="flex flex-col items-center mt-10">
 									<Search className="h-20 w-20 mb-2"></Search>
