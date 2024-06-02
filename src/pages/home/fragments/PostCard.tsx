@@ -100,9 +100,6 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
         </div>
 			</CardContent>
       <CardFooter className="flex flex-col items-start border-t bg-muted/50 px-6 py-6 gap-4">
-        {/* {showComments && comments.length > 0 && comments.map((comment, index) => {
-          return <CommentBubble comment={comment} index={index}/>
-        })} */}
         {comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? "Hide comments" : "Show more comments"}</Button> }
         {comments.length > 0 && !showComments ? (
           <>

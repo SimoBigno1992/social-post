@@ -63,7 +63,7 @@ const SignUp = () => {
 		const body = {
 			name: values.name,
 			email: values.email,
-			gender: "male",
+			gender: values.gender,
 			status: "active"
 		}
 		axios.post(`${BASE_URL}/public/v2/users`, body, config)

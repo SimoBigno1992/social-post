@@ -22,6 +22,8 @@ export type Comment = {
     body: string
 }
 
+export type SetAtom<Args extends any[], Result> = (...args: Args) => Result;
+
 export interface StoreModel {
     user: User
-  }
+}

@@ -13,7 +13,7 @@ import { Search } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
 
 const Home = () => {
-	const [store] = useAtom(storeAtom)
+	const [store, setStore] = useAtom(storeAtom)
 	const [posts, setPosts] = useState<Post[]>([])
 	const headerRef = useRef()
   const postCreationRef = useRef()
@@ -30,7 +30,7 @@ const Home = () => {
 	
 	useEffect(() => {
 		getPosts()
-	}, [store.user])
+	}, [])
 
 	useEffect(() => {
 		if (headerRef.current) {
@@ -79,7 +79,7 @@ const Home = () => {
 			<Header ref={headerRef} username={store.user!.name}/>
 			<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
         <div className="mx-auto grid w-full max-w-7xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[300px_1fr]">
-					<AccountInfo user={store.user!} postsNumber={posts.length}/>
+					<AccountInfo user={store.user!} postsNumber={posts.length} setStore={setStore}/>
           <div className="grid gap-6">
 						<PostCreation ref={postCreationRef} createPost={createPost}/>
 						<div style={{overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `, display: 'flex', flexDirection: "column", gap: "1.5rem"}}>
