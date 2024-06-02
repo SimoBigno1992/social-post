@@ -7,7 +7,7 @@ import avatar from '../../../assets/avatar.png'
 import { Post, Comment } from "@/utils/models"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { Facebook, Instagram, MessageCircle, Share2, Twitter } from "lucide-react"
+import { Facebook, Instagram, MessageCircle, Share2, TrendingUpIcon, Twitter } from "lucide-react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -21,6 +21,7 @@ import {
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import CommentBubble from "./CommentBubble"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
 
 type PostCardProps = {
   post: Post
@@ -35,6 +36,7 @@ const formSchema = z.object({
 const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
   const [showComments, setShowComments] = useState<boolean>(false)
   const [comments, setComments] = useState<Comment[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -43,6 +45,7 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
 	})
 
   useEffect(() => {
+    setLoading(true)
     getComments()
   }, [post])
 
@@ -55,6 +58,7 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
     axios.get(`${BASE_URL}/public/v2/posts/${post.id}/comments`, config)
       .then(response => {
         setComments(response.data.reverse())
+        setLoading(false)
       })
   }
 
@@ -108,8 +112,14 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
         </div>
 			</CardContent>
       <CardFooter className="flex flex-col items-start border-t bg-muted/50 px-6 py-6 gap-4">
-        {comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? "Hide comments" : "Show more comments"}</Button> }
-        {comments.length > 0 && !showComments ? (
+        {loading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> : comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? "Hide comments" : "Show more comments"}</Button> }
+        {loading ? <>
+          <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+          </> : comments.length > 0 && !showComments ? (
           <>
             <CommentBubble comment={comments[0]} index={0}/>
           </>

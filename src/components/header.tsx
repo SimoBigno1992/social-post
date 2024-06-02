@@ -14,7 +14,7 @@ import logoDark from '../assets/logo_dark.svg'
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import React from "react"
-import { useAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import storeAtom from '../utils/store/index'
 
 const Logo = styled.img`
@@ -26,7 +26,7 @@ type HeaderProps = {
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
 	const navigate = useNavigate()
-	const [store, setStore] = useAtom(storeAtom)
+	const setStore = useSetAtom(storeAtom)
 
 	const logout = () => {
 		navigate("/login")

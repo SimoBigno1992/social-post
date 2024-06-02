@@ -19,6 +19,7 @@ import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } fr
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import axios from "axios"
 import { toast } from "@/components/ui/use-toast"
+import { Skeleton } from "@/components/ui/skeleton"
 
 type AccountProps = {
 	user: User
@@ -33,19 +34,25 @@ const formSchema = z.object({
 }).required()
 
 const AccountInfo: React.FC<AccountProps> = ({
-	user, 
+	user,
 	postsNumber,
 	setStore
 }) => {
 	const [edit, setEdit] = useState<boolean>(false)
+	const [loading, setLoading] = useState<boolean>(false)
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-		  email: user.email,
+			email: user.email,
 			name: user.name,
 			gender: user.gender
 		},
 	})
+
+	const handleEdit = (values: z.infer<typeof formSchema>) => {
+		setLoading(true)
+		editUser(values)
+	}
 
 	const editUser = (values: z.infer<typeof formSchema>) => {
 		const config = {
@@ -63,63 +70,88 @@ const AccountInfo: React.FC<AccountProps> = ({
 		axios.put(`${BASE_URL}/public/v2/users/${user.id}`, body, config)
 			.then(res => {
 				setEdit(!edit)
-				console.log(res)
-				setStore({user: res.data})
+				setStore({ user: res.data })
+				setLoading(false)
 			})
 			.catch(err => {
 				toast({
 					title: "Ops...",
 					description: "Some error occurred",
-					variant: "destructive" 
+					variant: "destructive"
 				})
 			})
 	}
 
 	return (
 		<Card className="bg-primary-foreground">
-			{!edit ? <><CardHeader>
-				<CardTitle>{user.name}</CardTitle>
-			</CardHeader>
-			<CardContent className="grid gap-8">
-				<div className="flex items-center gap-4">
-					<div className="grid gap-1">
-						<p className="text-sm text-muted-foreground">Email</p>
-						<p className="text-sm font-medium leading-none">
-							{user.email}
-						</p>
-					</div>
-				</div>
-				<div className="flex items-center gap-4">
-					<div className="grid gap-1">
-						<p className="text-sm text-muted-foreground">Gender</p>
-						<p className="text-sm font-medium leading-none">
-							{user.gender}
-						</p>
-					</div>
-				</div>
-				<div className="flex items-center gap-4">
-					<div className="grid gap-1">
-						<p className="text-sm text-muted-foreground">Status</p>
-						<p className="text-sm font-medium leading-none">
-							{user.status}
-						</p>
-					</div>
-				</div>
-				<div className="flex items-center gap-4">
-					<div className="grid gap-1">
-						<p className="text-sm text-muted-foreground">Number of Posts</p>
-						<p className="text-sm font-medium leading-none">{postsNumber}</p>
-					</div>
-				</div>
-			</CardContent></> : 
-			<>
+			{loading ? <>
 				<CardHeader>
-					<CardTitle>Edit your Account</CardTitle>
+					<CardTitle><Skeleton className="h-7 w-full" /></CardTitle>
 				</CardHeader>
-				<CardContent>
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(editUser)} className="space-y-4">
-							<FormField
+				<CardContent className="grid gap-8">
+					<div className="flex gap-4 flex-col">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+					<div className="flex gap-4 flex-col">
+            <Skeleton className="h-4 w-fill" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+					<div className="flex gap-4 flex-col">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+					<div className="flex gap-4 flex-col">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+				</CardContent>
+			</>: 
+				!edit ? <>
+				<CardHeader>
+					<CardTitle>{user.name}</CardTitle>
+				</CardHeader>
+				<CardContent className="grid gap-8">
+					<div className="flex items-center gap-4">
+						<div className="grid gap-1">
+							<p className="text-sm text-muted-foreground">Email</p>
+							<p className="text-sm font-medium leading-none">
+								{user.email}
+							</p>
+						</div>
+					</div>
+					<div className="flex items-center gap-4">
+						<div className="grid gap-1">
+							<p className="text-sm text-muted-foreground">Gender</p>
+							<p className="text-sm font-medium leading-none">
+								{user.gender}
+							</p>
+						</div>
+					</div>
+					<div className="flex items-center gap-4">
+						<div className="grid gap-1">
+							<p className="text-sm text-muted-foreground">Status</p>
+							<p className="text-sm font-medium leading-none">
+								{user.status}
+							</p>
+						</div>
+					</div>
+					<div className="flex items-center gap-4">
+						<div className="grid gap-1">
+							<p className="text-sm text-muted-foreground">Number of Posts</p>
+							<p className="text-sm font-medium leading-none">{postsNumber}</p>
+						</div>
+					</div>
+				</CardContent>
+			</> :
+				<>
+					<CardHeader>
+						<CardTitle>Edit your Account</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Form {...form}>
+							<form onSubmit={form.handleSubmit(handleEdit)} className="space-y-4">
+								<FormField
 									control={form.control}
 									name="name"
 									render={({ field }) => (
@@ -137,7 +169,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 										</FormItem>
 									)}
 								/>
-							<FormField
+								<FormField
 									control={form.control}
 									name="email"
 									render={({ field }) => (
@@ -180,8 +212,8 @@ const AccountInfo: React.FC<AccountProps> = ({
 								<Button type="submit" className="w-full">Save</Button>
 							</form>
 						</Form>
-				</CardContent>
-			</>}
+					</CardContent>
+				</>}
 			{!edit && <CardFooter className="grid gap-4">
 				<div className="flex items-center justify-center gap-4">
 					<Button className="w-full border-slate-400" variant="outline" onClick={() => setEdit(!edit)}>Edit Account</Button>

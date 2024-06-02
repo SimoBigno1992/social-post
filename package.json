@@ -11,10 +11,6 @@
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
-    "@apollo/client": "^3.10.4",
-    "@graphql-codegen/typescript": "^4.0.7",
-    "@graphql-codegen/typescript-operations": "^4.2.1",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
     "@hookform/resolvers": "^3.4.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -27,7 +23,6 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.9",
-    "graphql": "^16.8.1",
     "jotai": "^2.8.2",
     "lucide-react": "^0.379.0",
     "react": "^18.2.0",
@@ -40,9 +35,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.2",
-    "@graphql-codegen/client-preset": "^4.2.6",
-    "@graphql-codegen/introspection": "4.0.3",
     "@parcel/watcher": "^2.4.1",
     "@types/node": "^20.12.12",
     "@types/react": "^18.2.66",

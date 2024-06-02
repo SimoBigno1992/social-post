@@ -16,7 +16,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import axios from 'axios'
-import { useAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import storeAtom from '../../utils/store/index'
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import { toast } from "@/components/ui/use-toast"
@@ -27,7 +27,7 @@ const formSchema = z.object({
 }).required()
 
 const Login = () => {
-	const [store, setStore] = useAtom(storeAtom)
+	const setStore = useSetAtom(storeAtom)
 	const navigate = useNavigate();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -114,6 +114,7 @@ const Login = () => {
 												<Input
 													id="password"
 													type="password"
+													placeholder="******"
 													{...field}
 												/>
 											</FormControl>
