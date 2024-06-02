@@ -3,6 +3,8 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -16,6 +18,7 @@ import { useNavigate } from "react-router-dom"
 import React from "react"
 import { useSetAtom } from "jotai"
 import storeAtom from '../utils/store/index'
+import { useTranslation } from "react-i18next";
 
 const Logo = styled.img`
 	cursor: pointer;
@@ -25,6 +28,7 @@ type HeaderProps = {
 }
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
+	const { i18n } = useTranslation();
 	const navigate = useNavigate()
 	const setStore = useSetAtom(storeAtom)
 
@@ -51,6 +55,11 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
+						<DropdownMenuLabel>Languages</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={() => i18n.changeLanguage("en")}>English</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => i18n.changeLanguage("it")}>Italiano</DropdownMenuItem>
+						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

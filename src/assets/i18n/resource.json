@@ -1,0 +1,28 @@
+{
+  "resources": {
+    "en": {
+      "translation": {
+        "gender": "Gender",
+        "name": "Name",
+        "numberOfPosts": "Number of Posts",
+        "login_subtitle": "Enter your email below to login to your account",
+        "login_goto": "Don't have an account?",
+        "signup": "Sign Up",
+        "new_post": "Create New Post",
+        "new_post_subtitle": "What are you thinking about?"
+      }
+    },
+    "it": {
+      "translation": {
+        "gender": "Genere",
+        "name": "Nome",
+        "numberOfPosts": "Numero di Post",
+        "login_subtitle": "Inserisci la mail per loggarti al tuo account",
+        "login_goto": "Non hai un account account?",
+        "signup": "Registrati",
+        "new_post": "Scrivi un nuovo Post",
+        "new_post_subtitle": "A cosa stai pensando?"
+      }
+    }
+  }
+}

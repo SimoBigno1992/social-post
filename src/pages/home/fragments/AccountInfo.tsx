@@ -20,6 +20,7 @@ import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import axios from "axios"
 import { toast } from "@/components/ui/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useNavigate } from "react-router-dom"
 
 type AccountProps = {
 	user: User
@@ -38,6 +39,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 	postsNumber,
 	setStore
 }) => {
+	const navigate = useNavigate();
 	const [edit, setEdit] = useState<boolean>(false)
 	const [loading, setLoading] = useState<boolean>(false)
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -72,6 +74,26 @@ const AccountInfo: React.FC<AccountProps> = ({
 				setEdit(!edit)
 				setStore({ user: res.data })
 				setLoading(false)
+			})
+			.catch(err => {
+				toast({
+					title: "Ops...",
+					description: "Some error occurred",
+					variant: "destructive"
+				})
+			})
+	}
+
+	const deleteUser = () => {
+		const config = {
+			headers: {
+				"Authorization": "Bearer " + BEARER_TOKEN
+			}
+		}
+
+		axios.delete(`${BASE_URL}/public/v2/users/${user.id}`, config)
+			.then(res => {
+				navigate("/login")
 			})
 			.catch(err => {
 				toast({
@@ -219,7 +241,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 					<Button className="w-full border-slate-400" variant="outline" onClick={() => setEdit(!edit)}>Edit Account</Button>
 				</div>
 				<div className="flex items-center justify-center gap-4">
-					<Button className="w-full" variant="destructive">Delete Account</Button>
+					<Button className="w-full" variant="destructive" onClick={() => deleteUser()}>Delete Account</Button>
 				</div>
 			</CardFooter>}
 		</Card>

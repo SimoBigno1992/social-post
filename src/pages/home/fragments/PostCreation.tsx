@@ -21,6 +21,7 @@ import {
 import { Plus, Trash } from "lucide-react"
 import { useState } from "react"
 import React from "react"
+import { useTranslation } from "react-i18next";
 
 const formSchema = z.object({
 	title: z.string().min(2, {
@@ -41,6 +42,7 @@ type PostCreationProps = {
 }
 
 const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPost}, ref) => {
+	const { t } = useTranslation();
 	const [showForm, setShowForm] = useState<boolean>(false)
 	const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,10 +62,10 @@ const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPo
 				<CardHeader className="flex flex-row items-center justify-between space-y-0">
 					<div className="flex flex-col">  
 						<CardTitle>
-							Create New Post
+							{t("new_post")}
 						</CardTitle>
 						<CardDescription>
-							What are you thinking about?
+							{t("new_post_subtitle")}
 						</CardDescription>
 					</div>
 					<Button size="icon" className="h-10 w-10 mt-0" variant={showForm ? "destructive" : "default"} onClick={() => {
