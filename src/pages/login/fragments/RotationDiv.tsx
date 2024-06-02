@@ -21,8 +21,7 @@ const RotationDiv: React.FC<Props> = ({children}) => {
 				opacity: 1,
 				rotateY: -90,
 			}}
-			className="flex items-center justify-center py-12"
-		>
+			className="flex items-center justify-center py-20">
 				{children}
 		</motion.div>
 	)

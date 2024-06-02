@@ -7,7 +7,7 @@ import avatar from '../../../assets/avatar.png'
 import { Post, Comment } from "@/utils/models"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { MessageCircle, Share2 } from "lucide-react"
+import { Facebook, Instagram, MessageCircle, Share2, Twitter } from "lucide-react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form"
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import CommentBubble from "./CommentBubble"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 type PostCardProps = {
   post: Post
@@ -95,7 +96,14 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
             {comments.length}
           </div>
           <div className="flex flex-row gap-2 my-4 cursor-pointer" onClick={() => {}}>
-            <Share2/>
+            <DropdownMenu>
+              <DropdownMenuTrigger><Share2 /></DropdownMenuTrigger>
+              <DropdownMenuContent className="min-w-0 flex flex-row" side="right">
+                <DropdownMenuItem><Facebook/></DropdownMenuItem>
+                <DropdownMenuItem><Twitter/></DropdownMenuItem>
+                <DropdownMenuItem><Instagram/></DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 			</CardContent>

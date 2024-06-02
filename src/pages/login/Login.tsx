@@ -3,7 +3,7 @@ import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { useNavigate } from 'react-router-dom'
 import RotationDiv from './fragments/RotationDiv'
-import BgImage from "./fragments/BgImage"
+import background from '../../assets/background.jpg'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -74,10 +74,9 @@ const Login = () => {
 	}
 
 	return (
-		<div
-			className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+		<div className="w-full" style={{backgroundImage: `url(${background})`, backgroundSize: 'cover', height: '100vh' }}>
 			<RotationDiv>
-				<Card className="mx-auto max-w-sm bg-primary-foreground">
+				<Card className="mx-auto max-w-sm bg-primary-foreground" style={{background: 'transparent', WebkitBackdropFilter: 'blur(20px)', backdropFilter: 'blur(20px'}}>
 					<CardHeader>
 						<CardTitle className="text-2xl">Login</CardTitle>
 						<CardDescription>
@@ -134,9 +133,6 @@ const Login = () => {
 					</CardContent>
 				</Card>
 			</RotationDiv>
-			<div className="hidden bg lg:block flex">
-				<BgImage />
-			</div>
 		</div>
 	)
 }
