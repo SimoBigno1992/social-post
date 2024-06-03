@@ -7,7 +7,7 @@ import avatar from '../../../assets/avatar.png'
 import { Post, Comment } from "@/utils/models"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { Facebook, Instagram, MessageCircle, Share2, TrendingUpIcon, Twitter } from "lucide-react"
+import { Facebook, Mail, MessageCircle, Share2, Twitter } from "lucide-react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -22,6 +22,9 @@ import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import CommentBubble from "./CommentBubble"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useTranslation } from "react-i18next";
+import { toast } from "@/components/ui/use-toast"
+import {EmailShareButton, FacebookShareButton, TwitterShareButton} from "react-share";
 
 type PostCardProps = {
   post: Post
@@ -37,6 +40,7 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
   const [showComments, setShowComments] = useState<boolean>(false)
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState<boolean>(false)
+  const { t } = useTranslation();
   const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -60,6 +64,14 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
         setComments(response.data.reverse())
         setLoading(false)
       })
+      .catch(err => {
+				setLoading(false)
+				toast({
+					title: "Ops...",
+					description: t("error"),
+					variant: "destructive" 
+				})
+			})
   }
 
   const createComment = (values: z.infer<typeof formSchema>) => {
@@ -77,11 +89,16 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
 
     axios.post(`${BASE_URL}/public/v2/posts/${post.id}/comments`, body, config)
       .then(response => {
-        console.log(response)
         form.reset()
         getComments()
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+				toast({
+					title: "Ops...",
+					description: t("error"),
+					variant: "destructive" 
+				})
+			})
   }
 
   return (
@@ -100,19 +117,33 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
             {comments.length}
           </div>
           <div className="flex flex-row gap-2 my-4 cursor-pointer" onClick={() => {}}>
+            
             <DropdownMenu>
               <DropdownMenuTrigger><Share2 /></DropdownMenuTrigger>
               <DropdownMenuContent className="min-w-0 flex flex-row" side="right">
-                <DropdownMenuItem><Facebook/></DropdownMenuItem>
-                <DropdownMenuItem><Twitter/></DropdownMenuItem>
-                <DropdownMenuItem><Instagram/></DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <FacebookShareButton url="https://social-post-ycud.vercel.app"><Facebook/></FacebookShareButton>
+                  </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <TwitterShareButton 
+                    url="https://social-post-ycud.vercel.app"
+                    title={post.title}
+                  ><Twitter/></TwitterShareButton>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <EmailShareButton 
+                    url="https://social-post-ycud.vercel.app"
+                    subject={post.title}
+                    body={post.body}
+                  ><Mail/></EmailShareButton>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
 			</CardContent>
       <CardFooter className="flex flex-col items-start border-t bg-muted/50 px-6 py-6 gap-4">
-        {loading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> : comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? "Hide comments" : "Show more comments"}</Button> }
+        {loading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> : comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? t("hide_label") : t("show_more_label")}</Button> }
         {loading ? <>
           <Skeleton className="h-12 w-12 rounded-full" />
           <div className="space-y-2">
@@ -141,7 +172,7 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
                       <Input
                         id="content"
                         type="text"
-                        placeholder="Type your comment here"
+                        placeholder={t("comment_placeholder")}
                         {...field}
                       />
                     </FormControl>
@@ -149,7 +180,7 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Reply</Button>
+              <Button type="submit">{t("reply_btn")}</Button>
             </form>
           </Form>
         </div>

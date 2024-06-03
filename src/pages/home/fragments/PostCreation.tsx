@@ -84,7 +84,7 @@ const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPo
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Input placeholder="Post title here" {...field} />
+											<Input placeholder={t("post_title_placeholder")} {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -96,13 +96,13 @@ const PostCreation = React.forwardRef<HTMLElement, PostCreationProps>(({createPo
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Textarea placeholder="Type your content here" {...field} />
+											<Textarea placeholder={t("post_content_placeholder")} {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" disabled={!form.formState.isDirty || !form.formState.isValid}>Publish</Button>
+							<Button type="submit" disabled={!form.formState.isDirty || !form.formState.isValid}>{t("publish_btn")}</Button>
 						</form>
 					</Form>
 				</CardContent>}

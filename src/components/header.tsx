@@ -12,7 +12,7 @@ import {
 	AvatarImage,
 } from "@/components/ui/avatar"
 import avatar from '../assets/avatar.png'
-import logoDark from '../assets/logo_dark.svg'
+import logoDark from '/logo.svg'
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import React from "react"
@@ -28,7 +28,7 @@ type HeaderProps = {
 }
 
 const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
-	const { i18n } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const navigate = useNavigate()
 	const setStore = useSetAtom(storeAtom)
 
@@ -38,10 +38,10 @@ const Header = React.forwardRef<HTMLElement, HeaderProps>(({username}, ref) => {
 	}
 
 	return (
-		<header ref={ref} className="flex justify-between items-center h-20 sm:p-10 ">
-			<Logo src={logoDark} className="h-20" alt="home" onClick={() => navigate("/home")} />
+		<header ref={ref} className="flex justify-between items-center h-20 px-6 sm:p-10 ">
+			<Logo src={logoDark} className="h-14" alt="home" />
 			<div className="flex items-center">
-				<div className="text-lg font-semibold sm:pr-4">Hi, {username}</div>
+				<div className="text-lg font-semibold sm:pr-4">{t("hi_label")}, {username}!</div>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button

@@ -21,7 +21,7 @@ import { Select } from "@radix-ui/react-select"
 import { SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
-
+import { useTranslation } from "react-i18next";
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -43,6 +43,7 @@ const formSchema = z.object({
 
 const SignUp = () => {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -69,15 +70,15 @@ const SignUp = () => {
 		axios.post(`${BASE_URL}/public/v2/users`, body, config)
 			.then(res => {
 				toast({
-					title: "You have create your account successfully!",
-					description: "Go to Sign In page to login.",
-					action: <ToastAction altText="Go to Sing In" onClick={() => navigate("/login")}>Go to Sign In</ToastAction>,
+					title: t("signup_success"),
+					description: t("signup_success_subtitle"),
+					action: <ToastAction altText="Go to Sing In" onClick={() => navigate("/login")}>{t("signup_success_action")}</ToastAction>,
 				})
 				form.reset()
 			}).catch(err => {
 				toast({
 					title: "Ops...",
-					description: "Some error occurred",
+					description: t("error"),
 					variant: "destructive" 
 				})
 			})
@@ -88,9 +89,9 @@ const SignUp = () => {
 			<RotationDiv>
 				<Card className="mx-auto max-w-sm bg-primary-foreground" style={{background: 'transparent', WebkitBackdropFilter: 'blur(20px)', backdropFilter: 'blur(20px'}}>
 				<CardHeader>
-					<CardTitle className="text-xl">Sign Up</CardTitle>
+					<CardTitle className="text-xl">{t("signup")}</CardTitle>
 					<CardDescription>
-						Enter your information to create an account
+						{t("signup_subtitle")}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -119,7 +120,7 @@ const SignUp = () => {
 									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<Label htmlFor="name">Full Name</Label>
+											<Label htmlFor="name">{t("full_name_label")}</Label>
 											<FormControl>
 												<Input
 													id="name"
@@ -137,16 +138,16 @@ const SignUp = () => {
 									name="gender"
 									render={({ field }) => (
 										<FormItem>
-											<Label htmlFor="gender">Gender</Label>
+											<Label htmlFor="gender">{t("gender")}</Label>
 											<FormControl>
 												<Select onValueChange={field.onChange} defaultValue={field.value}>
 													<SelectTrigger>
-														<SelectValue placeholder="Select a gender" />
+														<SelectValue placeholder={t("select_gender_placeholder")} />
 													</SelectTrigger>
 													<SelectContent id="gender">
 														<SelectGroup>
-															<SelectItem value="male">Male</SelectItem>
-															<SelectItem value="female">Female</SelectItem>
+															<SelectItem value="male">{t("male_label")}</SelectItem>
+															<SelectItem value="female">{t("female_label")}</SelectItem>
 														</SelectGroup>
 													</SelectContent>
 												</Select>
@@ -177,7 +178,7 @@ const SignUp = () => {
 									name="confirmPassword"
 									render={({ field }) => (
 										<FormItem>
-											<Label htmlFor="confirm_password">Confirm Password</Label>
+											<Label htmlFor="confirm_password">{t("confirm_password_label")}</Label>
 											<FormControl>
 												<Input
 													id="confirm_password"
@@ -190,13 +191,13 @@ const SignUp = () => {
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" className="w-full">Sign Up</Button>
+								<Button type="submit" className="w-full">{t("signup")}</Button>
 							</form>
 						</Form>
 					<div className="mt-4 text-center text-sm cursor-pointer">
-						Already have an account?{" "}
+						{t("signup_goto")}{" "}
 						<span onClick={()=>navigate("/login")} className="underline">
-							Sign in
+							{t("signin")}
 						</span>
 					</div>
 				</CardContent>

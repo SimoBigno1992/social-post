@@ -20,6 +20,10 @@ import { useSetAtom } from 'jotai'
 import storeAtom from '../../utils/store/index'
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import { toast } from "@/components/ui/use-toast"
+import { useTranslation } from "react-i18next";
+import { Loader2 } from "lucide-react"
+import { useState } from "react"
+import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
 	email: z.string().email("Invalid email address"),
@@ -27,6 +31,9 @@ const formSchema = z.object({
 }).required()
 
 const Login = () => {
+	const { t } = useTranslation();
+	const [loading, setLoading] = useState<boolean>(false)
+	const [isAdmin, setIsAdmin] = useState<boolean>(false)
 	const setStore = useSetAtom(storeAtom)
 	const navigate = useNavigate();
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -38,6 +45,11 @@ const Login = () => {
 	})
 
 	const handleLogin = (values: z.infer<typeof formSchema>) => {
+		setLoading(true)
+		login(values)
+	}
+
+	const login = (values: z.infer<typeof formSchema>) => {
 		const config = {
 			headers: {
 				"Authorization": "Bearer " + BEARER_TOKEN
@@ -45,29 +57,35 @@ const Login = () => {
 		}
 		axios.get(`${BASE_URL}/public/v2/users?email=${values.email}`, config)
 			.then(response => {
+				setLoading(false)
 				const user = response.data
 				if (user.length > 0 && user[0].status === 'active') {
 					setStore({user: user[0]})
-					navigate('/home')
+					if (isAdmin) {
+						navigate('/backoffice')
+					} else {
+						navigate('/home')
+					}
 				}
 				else if (user.length > 0 && user[0].status === 'inactive') {
 					toast({
-						title: "User Inactive",
-						description: "Your account is temporary disabled",
+						title: t("user_inactive"),
+						description: t("user_inactive_description"),
 						variant: "destructive" 
 					})
 				}
 				else {
 					toast({
-						title: "User Not Found",
-						description: "Any account exists with this email",
+						title: t("user_not_found"),
+						description: t("user_not_found_description"),
 						variant: "destructive" 
 					})
 				}
 			}).catch(err => {
+				setLoading(false)
 				toast({
 					title: "Ops...",
-					description: "Some error occurred",
+					description: t("error"),
 					variant: "destructive" 
 				})
 			})
@@ -78,9 +96,9 @@ const Login = () => {
 			<RotationDiv>
 				<Card className="mx-auto max-w-sm bg-primary-foreground" style={{background: 'transparent', WebkitBackdropFilter: 'blur(20px)', backdropFilter: 'blur(20px'}}>
 					<CardHeader>
-						<CardTitle className="text-2xl">Login</CardTitle>
+						<CardTitle className="text-2xl">{t("login")}</CardTitle>
 						<CardDescription>
-							Enter your email below to login to your account
+							{t("login_subtitle")}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -122,13 +140,21 @@ const Login = () => {
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" className="w-full">Login</Button>
+								<div className="flex items-center space-x-2">
+									<Label htmlFor="is-admin">{t("are_admin")}</Label>
+									<Switch 
+										id="is-admin"
+										checked={isAdmin}
+										onCheckedChange={() => setIsAdmin(!isAdmin)}
+									/>
+								</div>
+								<Button type="submit" className="w-full" disabled={loading}>{loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t("login")}</Button>
 							</form>
 						</Form>
 						<div className="mt-4 text-center text-sm">
-							Don't have an account?{" "}
+							{t("login_goto")}{" "}
 							<span onClick={() => navigate("/signup")} className="ml-auto inline-block text-sm underline cursor-pointer">
-								Sign Up
+								{t("signup")}
 							</span>
 						</div>
 					</CardContent>

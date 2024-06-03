@@ -12,11 +12,13 @@ import { useResizeObserver } from "@/utils/hooks/useResizeObserver"
 import { Search } from "lucide-react"
 import { UseFormReturn } from "react-hook-form"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
 	const [store, setStore] = useAtom(storeAtom)
 	const [posts, setPosts] = useState<Post[]>([])
 	const [loading, setLoading] = useState<boolean>(false)
+	const { t } = useTranslation();
 	const headerRef = useRef()
 	const postCreationRef = useRef()
 	const [headerHeight, setHeaderHeight] = useState(0)
@@ -98,8 +100,8 @@ const Home = () => {
 									}) :
 									<div className="flex flex-col items-center mt-10">
 										<Search className="h-20 w-20 mb-2"></Search>
-										<h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Any posts here</h3>
-										<p className="text-muted-foreground">It seems that you haven't write any posts yet. Write your first post!</p>
+										<h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{t("any_posts")}</h3>
+										<p className="text-muted-foreground">{t("any_posts_subtitle")}</p>
 									</div>}
 						</div>
 					</div>

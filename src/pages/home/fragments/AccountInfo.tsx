@@ -21,6 +21,9 @@ import axios from "axios"
 import { toast } from "@/components/ui/use-toast"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next";
+import { AlertDialog,AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
 
 type AccountProps = {
 	user: User
@@ -40,6 +43,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 	setStore
 }) => {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const [edit, setEdit] = useState<boolean>(false)
 	const [loading, setLoading] = useState<boolean>(false)
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -78,7 +82,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 			.catch(err => {
 				toast({
 					title: "Ops...",
-					description: "Some error occurred",
+					description: t("error"),
 					variant: "destructive"
 				})
 			})
@@ -98,7 +102,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 			.catch(err => {
 				toast({
 					title: "Ops...",
-					description: "Some error occurred",
+					description: t("error"),
 					variant: "destructive"
 				})
 			})
@@ -144,7 +148,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 					</div>
 					<div className="flex items-center gap-4">
 						<div className="grid gap-1">
-							<p className="text-sm text-muted-foreground">Gender</p>
+							<p className="text-sm text-muted-foreground">{t("gender")}</p>
 							<p className="text-sm font-medium leading-none">
 								{user.gender}
 							</p>
@@ -153,14 +157,12 @@ const AccountInfo: React.FC<AccountProps> = ({
 					<div className="flex items-center gap-4">
 						<div className="grid gap-1">
 							<p className="text-sm text-muted-foreground">Status</p>
-							<p className="text-sm font-medium leading-none">
-								{user.status}
-							</p>
+							<Badge>{user.status}</Badge>
 						</div>
 					</div>
 					<div className="flex items-center gap-4">
 						<div className="grid gap-1">
-							<p className="text-sm text-muted-foreground">Number of Posts</p>
+							<p className="text-sm text-muted-foreground">{t("number_of_posts")}</p>
 							<p className="text-sm font-medium leading-none">{postsNumber}</p>
 						</div>
 					</div>
@@ -168,7 +170,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 			</> :
 				<>
 					<CardHeader>
-						<CardTitle>Edit your Account</CardTitle>
+						<CardTitle>{t("edit_account")}</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Form {...form}>
@@ -178,7 +180,7 @@ const AccountInfo: React.FC<AccountProps> = ({
 									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<Label htmlFor="name">Full Name</Label>
+											<Label htmlFor="name">{t("full_name_label")}</Label>
 											<FormControl>
 												<Input
 													id="name"
@@ -214,16 +216,16 @@ const AccountInfo: React.FC<AccountProps> = ({
 									name="gender"
 									render={({ field }) => (
 										<FormItem>
-											<Label htmlFor="gender">Gender</Label>
+											<Label htmlFor="gender">{t("gender")}</Label>
 											<FormControl>
 												<Select onValueChange={field.onChange} defaultValue={field.value}>
 													<SelectTrigger>
-														<SelectValue placeholder="Select a gender" />
+														<SelectValue placeholder={t("select_gender_placeholder")} />
 													</SelectTrigger>
 													<SelectContent id="gender">
 														<SelectGroup>
-															<SelectItem value="male">Male</SelectItem>
-															<SelectItem value="female">Female</SelectItem>
+															<SelectItem value="male">{t("male_label")}</SelectItem>
+															<SelectItem value="female">{t("female_label")}</SelectItem>
 														</SelectGroup>
 													</SelectContent>
 												</Select>
@@ -231,17 +233,35 @@ const AccountInfo: React.FC<AccountProps> = ({
 										</FormItem>
 									)}
 								/>
-								<Button type="submit" className="w-full">Save</Button>
+								<Button type="submit" className="w-full">{t("save")}</Button>
+								<Button type="button" className="w-full border-slate-400" variant="outline"onClick={() => {
+									setEdit(!edit)
+									form.reset()
+								}}>{t("cancel_btn")}</Button>
 							</form>
 						</Form>
 					</CardContent>
 				</>}
 			{!edit && <CardFooter className="grid gap-4">
 				<div className="flex items-center justify-center gap-4">
-					<Button className="w-full border-slate-400" variant="outline" onClick={() => setEdit(!edit)}>Edit Account</Button>
+					<Button className="w-full border-slate-400" variant="outline" onClick={() => setEdit(!edit)}>{t("edit_account_btn")}</Button>
 				</div>
 				<div className="flex items-center justify-center gap-4">
-					<Button className="w-full" variant="destructive" onClick={() => deleteUser()}>Delete Account</Button>
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<Button className="w-full" variant="destructive">{t("delete_account_btn")}</Button>
+						</AlertDialogTrigger>
+						<AlertDialogContent className="bg-primary-foreground">
+							<AlertDialogHeader>
+								<AlertDialogTitle>{t("delete_title")}</AlertDialogTitle>
+								<AlertDialogDescription>{t("delete_subtitle")}</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>{t("cancel_btn")}</AlertDialogCancel>
+								<AlertDialogAction onClick={() => deleteUser()}>{t("continue_btn")}</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 				</div>
 			</CardFooter>}
 		</Card>

@@ -1,25 +1,27 @@
-import { Navigate, Route, Routes as RoutesD, HashRouter } from 'react-router-dom'
+import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom'
 import './App.css'
 import Login from './pages/login/Login'
 import SignUp from './pages/login/SignUp'
 import { AnimatePresence } from "framer-motion";
 import NotFound from './pages/NotFound';
 import Home from './pages/home/Home';
+import Backoffice from './pages/backoffice/Backoffice';
 
 function App() {
-
+  
   return (
-    <HashRouter>
+    <BrowserRouter>
       <AnimatePresence initial={false} mode={"wait"}>
-        <RoutesD>
+        <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/backoffice" element={<Backoffice />} />
           <Route path="*" element={<NotFound />} />
-        </RoutesD>
+        </Routes>
       </AnimatePresence>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
 
