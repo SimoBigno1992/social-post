@@ -61,7 +61,7 @@ const AccountFileds: React.FC<AccountFiledsProps> = ({ form }) => {
           <FormItem>
             <Label htmlFor="gender">{t("gender")}</Label>
             <FormControl>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                 <SelectTrigger>
                   <SelectValue placeholder={t("select_gender_placeholder")} />
                 </SelectTrigger>

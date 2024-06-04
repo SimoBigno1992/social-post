@@ -29,7 +29,7 @@
         "signin": "Sign In",
         "any_posts": "No posts here",
         "any_posts_subtitle": "It seems that you haven't write any posts yet. Write your first post!",
-        "edit_account": "Edit your Acoount",
+        "edit_account": "Edit your Account",
         "save": "Save",
         "edit_account_btn": "Edit Account",
         "delete_account_btn": "Delete Account",
@@ -55,7 +55,8 @@
         "block_label": "Block",
         "activate_label": "Activate",
         "any_users": "No users found",
-        "any_users_subtitle": "It seems that thera aren't user with the search criterea selected."
+        "any_users_subtitle": "It seems that thera aren't user with the search criterea selected.",
+        "delete_admin_subtitle": "This action cannot be undone. This will permanently delete this account and remove data from our servers"
       }
     },
     "it": {
@@ -113,7 +114,8 @@
         "block_label": "Blocca",
         "activate_label": "Attiva",
         "any_users": "Nessun utente trovato",
-        "any_users_subtitle": "Sembra che non ci siano utenti che rispecchino i criteri di ricerca."
+        "any_users_subtitle": "Sembra che non ci siano utenti che rispecchino i criteri di ricerca.",
+        "delete_admin_subtitle": "L'operazione è irreversibile. Questa azione cancellerà in modo permantente il questo account"
       }
     }
   }

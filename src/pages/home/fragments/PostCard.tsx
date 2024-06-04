@@ -116,6 +116,8 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
             <MessageCircle/>
             {comments.length}
           </div>
+
+          {/* SHARE BUTTONS */}
           <div className="flex flex-row gap-2 my-4 cursor-pointer" onClick={() => {}}>
             
             <DropdownMenu>
@@ -143,6 +145,8 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
         </div>
 			</CardContent>
       <CardFooter className="flex flex-col items-start border-t bg-muted/50 px-6 py-6 gap-4">
+
+        {/* COMMENT SECTION */}
         {loading ? <Skeleton className="w-[100px] h-[20px] rounded-full" /> : comments.length > 1 && <Button variant="link" className="text-muted-foreground h-1 px-0" onClick={() => setShowComments(!showComments)}>{showComments ? t("hide_label") : t("show_more_label")}</Button> }
         {loading ? <>
           <Skeleton className="h-12 w-12 rounded-full" />
@@ -157,6 +161,8 @@ const PostCard: React.FC<PostCardProps> = ({post, userMail, username}) => {
         ) : showComments && comments.length > 0 && comments.map((comment, index) => {
           return <CommentBubble comment={comment} index={index}/>
         })}
+
+        {/* COMMENT FORM */}
         <div className="flex flex-row w-full items-center gap-6">
           <Avatar className="h-14 w-14">
             <AvatarImage src={avatar} />

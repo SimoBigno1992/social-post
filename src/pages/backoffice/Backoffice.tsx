@@ -1,6 +1,6 @@
 import Header from "@/components/header"
 import { useAtomValue } from 'jotai'
-import storeAtom from '../../utils/store/index'
+import { user } from '../../utils/store/index'
 import {
   Card,
   CardContent,
@@ -25,12 +25,12 @@ import { User } from "@/utils/models"
 import TableFilter from "./fragments/TableFilter"
 import PaginationCustom from "./fragments/PaginationCustom"
 import { Input } from "@/components/ui/input"
-import { FileSpreadsheetIcon, Search } from "lucide-react"
+import { Search } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "@/components/ui/use-toast"
 
 const Backoffice = () => {
-  const store = useAtomValue(storeAtom)
+  const store = useAtomValue(user)
   const [users, setUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [perPage, setPerPage] = useState<number>(10)
@@ -83,7 +83,7 @@ const Backoffice = () => {
     getUsers(page, perPage)
   }
 
-  const editUser = (status: string, userId: number) => {
+  const editUser = (user: User) => {
     setLoading(true)
     const config = {
       headers: {
@@ -92,10 +92,13 @@ const Backoffice = () => {
     }
 
     const body = {
-      status
+      status: user.status,
+      gender: user.gender,
+      email: user.email,
+      name: user.name
     }
 
-    axios.put(`${BASE_URL}/public/v2/users/${userId}`, body, config)
+    axios.put(`${BASE_URL}/public/v2/users/${user.id}`, body, config)
       .then(res => {
         getUsers(currentPage, perPage)
       })
@@ -170,8 +173,11 @@ const Backoffice = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
+
+            {/* FILTERS ROW FOR THE DATATABLE */}
+
             <div className="flex items-center justify-between">
-              <div className="flex flex-1 items-center space-x-2">
+              <div className="flex flex-1 items-center space-x-2" style={{overflow: "auto"}}>
                 <Input
                   placeholder={t("admin_filter_name")}
                   value={filters.name}
@@ -194,6 +200,9 @@ const Backoffice = () => {
                 />
               </div>
             </div>
+                
+            {/* TABLE */}
+
             <Table>
               <TableHeaderCustom />
               <TableBody>
@@ -203,7 +212,10 @@ const Backoffice = () => {
                 })}
               </TableBody>
             </Table>
-            {users.length == 0 && <div className="flex flex-col items-center mt-10">
+
+            {/* EMPTY STATE */}
+
+            {users.length == 0 && !loading && <div className="flex flex-col items-center mt-10">
                 <Search className="h-20 w-20 mb-2"></Search>
                 <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">{t("any_users")}</h3>
                 <p className="text-muted-foreground">{t("any_users_subtitle")}</p>

@@ -15,15 +15,22 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next";
 import { User } from "@/utils/models"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useState } from "react"
+import DialogUser from "./DialogUser"
+import { Dialog } from "@/components/ui/dialog"
+
 
 type TableRowCustomProps = {
   user: User
-  editUser: (status: string, userId: number) => void
+  editUser: (user: User) => void
   deleteUser: (userId: number) => void
 }
 
 const TableRowCustom: React.FC<TableRowCustomProps> = ({ user, editUser, deleteUser }) => {
   const { t } = useTranslation();
+  const [open, setOpen] = useState<boolean>(false)
+  const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   return (
     <TableRow>
@@ -41,6 +48,9 @@ const TableRowCustom: React.FC<TableRowCustomProps> = ({ user, editUser, deleteU
       <TableCell className="hidden md:table-cell">{user.email}</TableCell>
       <TableCell className="hidden md:table-cell">{user.gender}</TableCell>
       <TableCell>
+
+        {/* DROPDOWN ACTIONS ON ACCOUNT ROW - EDIT, BLOCK/UNBLOCK, DELETE */}
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -49,10 +59,43 @@ const TableRowCustom: React.FC<TableRowCustomProps> = ({ user, editUser, deleteU
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => editUser(user.status == "active" ? "inactive" : "active", user.id)} >{user.status == "active" ? t("block_label") : t("activate_label")}</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => deleteUser(user.id)}>{t("delete_account_btn")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setOpenDialog(true)}>{t("edit_account_btn")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {
+              let backupUser = user
+              backupUser.status = user.status == "active" ? "inactive" : "active"
+              editUser(backupUser)}
+            } >{user.status == "active" ? t("block_label") : t("activate_label")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setOpen(true)}>{t("delete_account_btn")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* ALERT BEFORE DELETING ACCOUNT ACTION */}
+
+        <div className="flex items-center justify-center gap-4">
+          <AlertDialog open={open}>
+            <AlertDialogContent className="bg-primary-foreground">
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t("delete_title")}</AlertDialogTitle>
+                <AlertDialogDescription>{t("delete_admin_subtitle")}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setOpen(false)}>{t("cancel_btn")}</AlertDialogCancel>
+                <AlertDialogAction onClick={() => {
+                  setOpen(false)
+                  deleteUser(user.id)}
+                }>{t("continue_btn")}</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
+        {/* DIALOG TO EDIT ACCOUNT INFORMATIONS */}
+
+        <div className="flex items-center justify-center gap-4">
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogUser user={user} setOpenDialog={setOpenDialog} editUser={editUser}/>
+          </Dialog>
+        </div>
       </TableCell>
     </TableRow>
   )

@@ -2,7 +2,6 @@ import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { useNavigate } from 'react-router-dom'
-import RotationDiv from './fragments/RotationDiv'
 import background from '../../assets/background.jpg'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { z } from "zod"
@@ -86,7 +85,7 @@ const SignUp = () => {
 
 	return (
 		<div className="w-full" style={{backgroundImage: `url(${background})`, backgroundSize: 'cover', height: '100vh' }}>
-			<RotationDiv>
+			<div className="flex items-center justify-center py-20">
 				<Card className="mx-auto max-w-sm bg-primary-foreground" style={{background: 'transparent', WebkitBackdropFilter: 'blur(20px)', backdropFilter: 'blur(20px'}}>
 				<CardHeader>
 					<CardTitle className="text-xl">{t("signup")}</CardTitle>
@@ -202,7 +201,7 @@ const SignUp = () => {
 					</div>
 				</CardContent>
 			</Card>
-			</RotationDiv>
+			</div>
 		</div>
 	)
 }

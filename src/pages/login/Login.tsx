@@ -2,7 +2,6 @@ import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Label } from "../../components/ui/label"
 import { useNavigate } from 'react-router-dom'
-import RotationDiv from './fragments/RotationDiv'
 import background from '../../assets/background.jpg'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { z } from "zod"
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/form"
 import axios from 'axios'
 import { useSetAtom } from 'jotai'
-import storeAtom from '../../utils/store/index'
+import { user } from '../../utils/store/index'
 import { BASE_URL, BEARER_TOKEN } from "@/config.env"
 import { toast } from "@/components/ui/use-toast"
 import { useTranslation } from "react-i18next";
@@ -34,7 +33,7 @@ const Login = () => {
 	const { t } = useTranslation();
 	const [loading, setLoading] = useState<boolean>(false)
 	const [isAdmin, setIsAdmin] = useState<boolean>(false)
-	const setStore = useSetAtom(storeAtom)
+	const setStore = useSetAtom(user)
 	const navigate = useNavigate();
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -93,7 +92,7 @@ const Login = () => {
 
 	return (
 		<div className="w-full" style={{backgroundImage: `url(${background})`, backgroundSize: 'cover', height: '100vh' }}>
-			<RotationDiv>
+			<div className="flex items-center justify-center py-20">
 				<Card className="mx-auto max-w-sm bg-primary-foreground" style={{background: 'transparent', WebkitBackdropFilter: 'blur(20px)', backdropFilter: 'blur(20px'}}>
 					<CardHeader>
 						<CardTitle className="text-2xl">{t("login")}</CardTitle>
@@ -159,7 +158,7 @@ const Login = () => {
 						</div>
 					</CardContent>
 				</Card>
-			</RotationDiv>
+			</div>
 		</div>
 	)
 }

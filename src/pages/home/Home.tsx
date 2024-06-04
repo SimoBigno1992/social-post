@@ -2,7 +2,7 @@ import Header from "@/components/header"
 import AccountInfo from "./fragments/AccountInfo"
 import PostCreation from "./fragments/PostCreation"
 import { useAtom } from 'jotai'
-import storeAtom from '../../utils/store/index'
+import { user } from '../../utils/store/index'
 import { useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Post } from "@/utils/models"
@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
-	const [store, setStore] = useAtom(storeAtom)
+	const [store, setStore] = useAtom(user)
 	const [posts, setPosts] = useState<Post[]>([])
 	const [loading, setLoading] = useState<boolean>(false)
 	const { t } = useTranslation();
@@ -33,9 +33,11 @@ const Home = () => {
 	const observePostCreation = useResizeObserver(updateSizes)
 
 	useEffect(() => {
-		setLoading(true)
-		getPosts()
-	}, [])
+		if (store.user.id != 0) {
+			setLoading(true)
+			getPosts()
+		}
+	}, [store])
 
 	useEffect(() => {
 		if (headerRef.current) {
@@ -85,7 +87,7 @@ const Home = () => {
 			<Header ref={headerRef} username={store.user!.name} />
 			<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
 				<div className="mx-auto grid w-full max-w-7xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[300px_1fr]">
-					<AccountInfo user={store.user!} postsNumber={posts.length} setStore={setStore} />
+					<AccountInfo postsNumber={posts.length}/>
 					<div className="grid gap-6">
 						<PostCreation ref={postCreationRef} createPost={createPost} />
 						<div style={{ overflow: 'auto', height: `calc(100vh - ${headerHeight}px - ${postCreationHeight}px - 104px `, display: 'flex', flexDirection: "column", gap: "1.5rem" }}>
