@@ -12,15 +12,19 @@ The app offers the following features:
 
 -   Login: Existing users can log in using their credentials. Password is fake, you can type any password.
 -   Login Admin: If you want to access to the backoffice page, you can access with any existing email just checking the swith button.
--   Register: New users can create an account by providing necessary information. Password will not be registered, is just for simulate a real flow.
+-   Register: New users can create an account by providing necessary information. Password will not be registered, is just to simulate a real flow.
 
 2. **Homepage:**
 
--   Users can create new posts, comment them and manage their account (edit informations or delete account).
+-   Users can create new posts, sharing them, comment them and manage their account (edit informations or delete account).
 
-2. **Backoffice:**
+3. **Backoffice:**
 
 -   Admin can see any users, apply filters and pagination to manage datatable, manage any users (changing status or deleting accounts)
+
+4. **Multilanguage:**
+
+-   All app have multilanguage implemented with i18n. Actually support English and Italian.
 
 ## Prerequisites
 
