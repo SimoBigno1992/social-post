@@ -57,7 +57,7 @@ const DialogUser: React.FC<DialogUserProps> = ({ user, setOpenDialog, editUser }
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-4">
           <AccountFileds form={form} />
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button type="button" className="w-full border-slate-400" variant="outline" onClick={() => {
               setOpenDialog(false)
               form.reset()
