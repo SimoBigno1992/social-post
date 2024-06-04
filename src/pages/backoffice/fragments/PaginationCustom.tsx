@@ -7,10 +7,11 @@ import { useTranslation } from "react-i18next";
 type PaginationCustomProps = {
   perPage: number
   currentPage: number
+  usersLength: number
   handlePagination: (currentPage: number, perPage: number) => void
 }
 
-const PaginationCustom: React.FC<PaginationCustomProps> = ({perPage, currentPage, handlePagination}) => {
+const PaginationCustom: React.FC<PaginationCustomProps> = ({perPage, currentPage, usersLength, handlePagination}) => {
   const { t } = useTranslation();
 
   return (
@@ -60,6 +61,7 @@ const PaginationCustom: React.FC<PaginationCustomProps> = ({perPage, currentPage
             variant="default"
             className="h-8 w-8 p-0"
             onClick={() => handlePagination(currentPage + 1, perPage)}
+            disabled={usersLength < perPage}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRight className="h-4 w-4" />
@@ -68,6 +70,7 @@ const PaginationCustom: React.FC<PaginationCustomProps> = ({perPage, currentPage
             variant="default"
             className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => handlePagination(currentPage + 10, perPage)}
+            disabled={usersLength < perPage}
           >
             <span className="sr-only">Go to last page</span>
             <ChevronsRight className="h-4 w-4" />

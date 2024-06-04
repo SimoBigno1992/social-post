@@ -15,39 +15,15 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next";
 import { User } from "@/utils/models"
-import { BASE_URL, BEARER_TOKEN } from "@/config.env"
-import axios from "axios"
 
 type TableRowCustomProps = {
-  user: User,
+  user: User
+  editUser: (status: string, userId: number) => void
+  deleteUser: (userId: number) => void
 }
 
-const TableRowCustom: React.FC<TableRowCustomProps> = ({ user }) => {
+const TableRowCustom: React.FC<TableRowCustomProps> = ({ user, editUser, deleteUser }) => {
   const { t } = useTranslation();
-
-  const editUser = (action?: string) => {
-		const config = {
-			headers: {
-				"Authorization": "Bearer " + BEARER_TOKEN
-			}
-		}
-
-		const body = {
-      status: user.status === "active" ? "incative" : "active"
-		}
-
-		axios.put(`${BASE_URL}/public/v2/users/${user.id}`, body, config)
-			.then(res => {
-				
-			})
-			.catch(err => {
-				// toast({
-				// 	title: "Ops...",
-				// 	description: t("error"),
-				// 	variant: "destructive"
-				// })
-			})
-	}
 
   return (
     <TableRow>
@@ -73,9 +49,8 @@ const TableRowCustom: React.FC<TableRowCustomProps> = ({ user }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>{t("edit_account_btn")}</DropdownMenuItem>
-            <DropdownMenuItem>{user.status == "active" ? t("block_label") : t("activate_label")}</DropdownMenuItem>
-            <DropdownMenuItem>{t("delete_account_btn")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editUser(user.status == "active" ? "inactive" : "active", user.id)} >{user.status == "active" ? t("block_label") : t("activate_label")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => deleteUser(user.id)}>{t("delete_account_btn")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>

@@ -12,6 +12,8 @@ import {
 import {
   Table,
   TableBody,
+  TableCell,
+  TableRow,
 } from "@/components/ui/table"
 import { useTranslation } from "react-i18next";
 import TableHeaderCustom from "./fragments/TableHeader"
@@ -23,13 +25,16 @@ import { User } from "@/utils/models"
 import TableFilter from "./fragments/TableFilter"
 import PaginationCustom from "./fragments/PaginationCustom"
 import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
+import { FileSpreadsheetIcon, Search } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "@/components/ui/use-toast"
 
 const Backoffice = () => {
   const store = useAtomValue(storeAtom)
   const [users, setUsers] = useState<User[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [perPage, setPerPage] = useState<number>(10)
+  const [loading, setLoading] = useState<boolean>(false)
   const [filters, setFilters] = useState({
     name: "",
     gender: "",
@@ -37,8 +42,9 @@ const Backoffice = () => {
   })
 
   const { t } = useTranslation();
-
+  
   useEffect(() => {
+    setLoading(true)
     getUsers(currentPage, perPage)
   }, [filters])
 
@@ -58,16 +64,98 @@ const Backoffice = () => {
     axios.get(`${BASE_URL}/public/v2/users?page=${page}&per_page=${perPage}${queryParams}`, config)
       .then(res => {
         setUsers(res.data)
+        setLoading(false)
       })
       .catch(err => {
-
+        setLoading(false)
+        toast({
+					title: "Ops...",
+					description: t("error"),
+					variant: "destructive"
+				})
       })
   }
 
   const handlePagination = (page: number, perPage: number) => {
+    setLoading(true)
     setCurrentPage(page)
     setPerPage(perPage)
     getUsers(page, perPage)
+  }
+
+  const editUser = (status: string, userId: number) => {
+    setLoading(true)
+    const config = {
+      headers: {
+        "Authorization": "Bearer " + BEARER_TOKEN
+      }
+    }
+
+    const body = {
+      status
+    }
+
+    axios.put(`${BASE_URL}/public/v2/users/${userId}`, body, config)
+      .then(res => {
+        getUsers(currentPage, perPage)
+      })
+      .catch(err => {
+        setLoading(false)
+        toast({
+          title: "Ops...",
+          description: t("error"),
+          variant: "destructive"
+        })
+      })
+  }
+
+  const deleteUser = (userId: number) => {
+    setLoading(true)
+    const config = {
+      headers: {
+        "Authorization": "Bearer " + BEARER_TOKEN
+      }
+    }
+
+    axios.delete(`${BASE_URL}/public/v2/users/${userId}`, config)
+      .then(res => {
+        getUsers(currentPage, perPage)
+      })
+      .catch(err => {
+        setLoading(false)
+        toast({
+          title: "Ops...",
+          description: t("error"),
+          variant: "destructive"
+        })
+      })
+  }
+
+  const skeleton = () => {
+    const elements: JSX.Element[] = [];
+    for(let i=0; i < 5; i++) {
+      elements.push( <TableRow key={i}>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+        <TableCell>
+          <Skeleton className="h-12 w-full" />
+        </TableCell>
+      </TableRow>)
+    }
+    return elements
   }
 
   return (
@@ -76,7 +164,7 @@ const Backoffice = () => {
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
         <Card className="bg-primary-foreground">
           <CardHeader>
-            <CardTitle>Admin Console</CardTitle>
+            <CardTitle className="text-2xl">Admin Console</CardTitle>
             <CardDescription>
               {t("backoffice_subtitle")}
             </CardDescription>
@@ -109,8 +197,9 @@ const Backoffice = () => {
             <Table>
               <TableHeaderCustom />
               <TableBody>
-                {users && users.length > 0 && users.map((user, index) => {
-                  return <TableRowCustom key={index} user={user} />
+                {loading ? <>{skeleton()}</>
+                : users && users.length > 0 && users.map((user, index) => {
+                  return <TableRowCustom key={index} user={user} editUser={editUser} deleteUser={deleteUser}/>
                 })}
               </TableBody>
             </Table>
@@ -121,7 +210,7 @@ const Backoffice = () => {
               </div>}
           </CardContent>
           <CardFooter className="justify-end">
-            <PaginationCustom perPage={perPage} currentPage={currentPage} handlePagination={handlePagination} />
+            <PaginationCustom perPage={perPage} currentPage={currentPage} usersLength={users.length} handlePagination={handlePagination} />
           </CardFooter>
         </Card>
       </main>
